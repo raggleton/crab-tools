@@ -5,7 +5,7 @@ Tools to help you using crab. Because no one should have to suffer using CRAB. o
 
 Please file any bugs/feature requests! 
 
-not that usage of these tools is at your own risk, although they worked fine when I treid them.
+Note that usage of these tools is at your own risk, although they worked fine when I treid them.
 
 Tools:
 
