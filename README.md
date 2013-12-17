@@ -35,6 +35,6 @@ This is crabCheckStatus.sh, but for lots of datasets (i.e. when using multicrab)
 
 
 TODO:
-[ ] run `multicrabMonitor.sh` with cron, so you can submit, and elave it for a day or so.
-[ ] tidy up scripts
-[ ] maybe consolodate scripts?
+- [ ] run `multicrabMonitor.sh` with cron, so you can submit, and elave it for a day or so.
+- [ ] tidy up scripts
+- [ ] maybe consolodate scripts?
