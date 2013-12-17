@@ -35,6 +35,7 @@ This is crabCheckStatus.sh, but for lots of datasets (i.e. when using multicrab)
 
 
 TODO:
-- [ ] run `multicrabMonitor.sh` with cron, so you can submit, and elave it for a day or so.
+- [ ] run `multicrabMonitor.sh` with cron, so you can submit, and leave it for a day or so.
 - [ ] tidy up scripts
 - [ ] maybe consolodate scripts?
+- [ ] imrpove checks by checking against actual files in Bristol T2
