@@ -3,11 +3,23 @@ crab-tools
 
 Tools to help you using crab. Because no one should have to suffer using CRAB. o_O
 
-Please file any bugs/feature requests! 
+Please file any bugs/feature requests! These scripts assume you're using bash.
 
-Note that usage of these tools is at your own risk, although they worked fine when I treid them.
+Note that usage of these tools is at your own risk, although they worked fine when I tried them.
 
-Tools:
+##Installation
+
+Add this folder to your PATH variable:
+
+`export PATH=$PATH:$(pwd)`
+
+To make this more permanent, add to PATH in your `~/.bash_profile`:
+
+`export PATH=$PATH:<path to crab-tools>` 
+
+Now you can call any tool from any folder! Just type in the script name and any args to execute it.
+
+##Tools:
 
 - crabSubmitLots.sh
 - crabCheckStatus.sh
@@ -35,6 +47,7 @@ This is crabCheckStatus.sh, but for lots of datasets (i.e. when using multicrab)
 
 
 TODO:
+- [ ] make more user friendly with "Usage:..." output
 - [ ] run `multicrabMonitor.sh` with cron, so you can submit, and leave it for a day or so.
 - [ ] tidy up scripts
 - [ ] maybe consolodate scripts?
