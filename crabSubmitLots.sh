@@ -3,6 +3,12 @@
 # Robin Aggleton 2013
 # Allows CRAB to submit more than 500 jobs 
 
+# Usage: crabSubmitLots.sh <JOB FOLDER>
+# e.g. crabSubmitLots.sh SignalM125_POWHEG
+# This script will then submit all jobs for that dataset, even if > 500
+
+
+# OLD:
 # Usage: crabSubmitLots.sh <OPT> <JOB FOLDER> <JOB NUMBERS>
 # -R option for resubmission instead of submission, *BUT IS BROKEN*
 # only job folder argument is mandatory
