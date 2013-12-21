@@ -21,6 +21,9 @@ OPT=""
 JOB_FOLDER=""
 JOB_NUMBERS=""
 
+# Check to see if the user has passed an argument or not
+
+
 if [ "$#" -eq "1" ]
 then
     JOB_FOLDER=$1
@@ -39,6 +42,8 @@ then
     JOB_NUMBERS=$3
 fi
 
+# If no job numbers specified, then find out how many jobs there are
+# using the DATASET/share/arguments.xml file
 if [ -z "$JOB_NUMBERS" ]
 then
     NJOBS=`grep "JobID=*" $1/share/arguments.xml | wc -l`
@@ -51,6 +56,8 @@ then
         x=$((x+500))
     done 
 else
+    # Loop over job numbers the user specified
+    # Need to be clever here - could be some hypens and ranges, not just a pure list
     echo $JOB_NUMBERS
     NJOBS=`echo $JOB_NUMBERS | awk -F "," '{ for (i=1; i<NF; i++) printf $i"\n" ; print $NF }' | wc -w`
     echo "Total number of jobs to submit: " $NJOBS
