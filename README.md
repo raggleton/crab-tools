@@ -9,7 +9,11 @@ Note that usage of these tools is at your own risk, although they worked fine wh
 
 ##Installation
 
-Add this folder to your PATH variable:
+In a location of your choice do:
+
+`git clone https://github.com/raggleton/crab-tools.git`
+
+`cd` into the newly-created `crab-tools` folder and add this folder to your PATH variable:
 
 `export PATH=$PATH:$(pwd)`
 
@@ -17,7 +21,7 @@ To make this more permanent, add to PATH in your `~/.bash_profile`:
 
 `export PATH=$PATH:<path to crab-tools>` 
 
-Now you can call any tool from any folder! Just type in the script name and any args to execute it.
+Now you can call any of my tools from any folder! Just type in the script name and any args to execute it. For help, use the `-h` arg.
 
 ##Tools:
 
@@ -28,6 +32,8 @@ Now you can call any tool from any folder! Just type in the script name and any 
 ###crabSubmitLots.sh
 
 This submits a set of jobs for a dataset. Use this to submit datasets which have >500 jobs, as Remote GlideIn doesn't let you submit more than 500 at a time. 
+
+Usage: `crabSubmitLots.sh -f <FOLDER NAME>
 
 ###crabCheckStatus.sh
 
@@ -43,8 +49,6 @@ If all jobs are DONE it will output a script file, `DATASETNAME_success.sh`, whi
 
 **Please note:** this is for those generic 60307/8,8020/1 errors that are solved by just resubmitting. Before running this blindly, have a look at the Task Monitor webpage or doing a `crab -status` manually to see if it something more serious that requires more attention - it's not a magic tool!
 
-
-
 ###multicrabMonitor.sh
 
 This is crabCheckStatus.sh, but for lots of datasets (i.e. when using multicrab). This goes through each folder, does `crabCheckStatus.sh` on each, then at the end reports back to you which datasets are done or still running in a neat summary.
@@ -55,4 +59,4 @@ TODO:
 - [ ] run `multicrabMonitor.sh` with cron, so you can submit, and leave it for a day or so.
 - [ ] tidy up scripts
 - [ ] maybe consolodate scripts?
-- [ ] imrpove checks by checking against actual files in Bristol T2
+- [ ] improve checks by checking against actual files in Bristol T2
