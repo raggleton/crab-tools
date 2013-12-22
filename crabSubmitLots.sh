@@ -77,7 +77,7 @@ fi
 
 # Find out how many jobs there are
 # using the DATASET/share/arguments.xml file
-NJOBS=`grep "JobID=*" $1/share/arguments.xml | wc -l`
+NJOBS=`grep "JobID=*" $JOB_FOLDER/share/arguments.xml | wc -l`
 echo "Total number of jobs to submit: " $NJOBS
 job_lower=1
 job_upper=1
