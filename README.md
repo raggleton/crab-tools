@@ -29,7 +29,7 @@ Now you can call any of my tools from any folder! Just type in the script name a
 
 This submits a set of jobs for a dataset. Use this to submit datasets which have >500 jobs, as Remote GlideIn doesn't let you submit more than 500 at a time. 
 
-Usage: `crabSubmitLots.sh -f <FOLDER NAME>
+Usage: `crabSubmitLots.sh -f <FOLDER NAME>`
 
 ###crabCheckStatus.sh
 
