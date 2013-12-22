@@ -1,100 +1,101 @@
-#!/bin/bash
+# !/bin/bash
 
 # Robin Aggleton 2013
-# Allows CRAB to submit more than 500 jobs 
-
-# Usage: crabSubmitLots.sh <JOB FOLDER>
-# e.g. crabSubmitLots.sh SignalM125_POWHEG
+# Allows CRAB to submit more than 500 jobs for a given dataset folder
+#
+# Usage: crabSubmitLots.sh -f <JOB FOLDER>
+# e.g. crabSubmitLots.sh -f SignalM125_POWHEG
 # This script will then submit all jobs for that dataset, even if > 500
 
+function show_help {
+    echo ""
+    echo "This script will submit all CRAB jobs for a specified dataset, even if > 500 jobs."
+    echo "Usage: crabSubmitLots.sh -f <dataset folder>"
+    echo ""
+    echo "Options:"
+    echo "  -h Show this help message"
+    echo "  -v Display verbose messages, for debugging only"
+    echo "  -f <folder> Specify dataset folder"
+    echo ""
+    exit 
+}
 
-# OLD:
-# Usage: crabSubmitLots.sh <OPT> <JOB FOLDER> <JOB NUMBERS>
-# -R option for resubmission instead of submission, *BUT IS BROKEN*
-# only job folder argument is mandatory
 
-# To find out how many jobs there are
-# look in <JOB>/share/arguments.xml
-# Or see how many the user has specified
-
-OPT=""
 JOB_FOLDER=""
-JOB_NUMBERS=""
+VERBOSE=false
 
 # Check to see if the user has passed an argument or not
-
-
-if [ "$#" -eq "1" ]
+if [ $# -eq 0 ]
 then
-    JOB_FOLDER=$1
-fi 
-
-if [ "$#" -eq "2" ]
-then
-    JOB_FOLDER=$1
-    JOB_NUMBERS=$2
-fi 
-   
-if [ "$#" -eq "3" ]
-then
-    OPT=$1
-    JOB_FOLDER=$2
-    JOB_NUMBERS=$3
+  echo "Error: Program requires argument"
+  show_help >&2
+  exit 1
 fi
 
-# If no job numbers specified, then find out how many jobs there are
+# Interpret and command line arguments
+# OPTIND=1 # Reset is necessary if getopts was used previously in the script.  It is a good idea to make this local in a function.
+while getopts "hvf:" opt; do
+  case "$opt" in
+    h)
+      show_help
+      exit 0
+      ;;
+    v)  
+      VERBOSE=true
+      ;;
+    f)
+      JOB_FOLDER=$OPTARG
+      ;;
+    '?')
+      show_help >&2
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND-1)) # Shift off the options and optional --.
+
+if $VERBOSE
+then
+  echo "verbose=$VERBOSE, output_file='$JOB_FOLDER', Leftovers: $@"
+fi
+
+# Check what other stuff the user has passed as args
+if [ "$@" ]
+then
+  echo ""
+  echo "I don't know what to do with this: $@"
+  show_help >&2
+  exit
+fi
+
+# Check if user specified a correct folder
+if [ ! -d "$JOB_FOLDER" ]
+then
+  echo "Specified folder $JOB_FOLDER does not exist, please check again!" >&2
+  exit 2
+fi
+
+# Find out how many jobs there are
 # using the DATASET/share/arguments.xml file
-if [ -z "$JOB_NUMBERS" ]
-then
-    NJOBS=`grep "JobID=*" $1/share/arguments.xml | wc -l`
-    echo "Total number of jobs to submit: " $NJOBS
-    x=1
+NJOBS=`grep "JobID=*" $1/share/arguments.xml | wc -l`
+echo "Total number of jobs to submit: " $NJOBS
+job_lower=1
+job_upper=1
 
-    while [ "$x" -le "$NJOBS" ]
-    do
-         crab -submit $x-$((x+499)) -c $JOB_FOLDER
-        x=$((x+500))
-    done 
-else
-    # Loop over job numbers the user specified
-    # Need to be clever here - could be some hypens and ranges, not just a pure list
-    echo $JOB_NUMBERS
-    NJOBS=`echo $JOB_NUMBERS | awk -F "," '{ for (i=1; i<NF; i++) printf $i"\n" ; print $NF }' | wc -w`
-    echo "Total number of jobs to submit: " $NJOBS
+while [ "$job_lower" -le "$NJOBS" ]
+do
+  if [ "$NJOBS" -lt $((job_lower+499)) ]
+  then
+    job_upper=$NJOBS
+  else
+    job_upper=$((job_lower+499))
+  fi
 
-    IFS="," # internal variable for Internal Field Separator, defaults to whitespace, I've set it to ',' here
-    counter=0
-    JOBLIST=""
-    for v in $JOB_NUMBERS # Loop over user requested jobs
-    do 
-        if [ "$counter" -eq 500 ] # Every 500, do a submission
-        then
-            # echo `crab -submit $JOBLIST -c $JOB_FOLDER`
-            if [ "$OPT" == "-R" ]; then
-                crab -resubmit $JOBLIST -c $JOB_FOLDER
-            else
-                crab -submit $JOBLIST -c $JOB_FOLDER
-            fi
-            # echo $JOBLIST
-            JOBLIST=""
-            counter=0
-        fi
-        
-        IFS=" "
-        if [ "$counter" -eq 0 ]
-        then
-            JOBLIST="$v"
-        else
-            JOBLIST="$JOBLIST,$v"
-        fi
-        ((counter+=1))
-    done
-    # echo `crab -submit $JOBLIST -c $JOB_FOLDER`
-    if [ "$OPT" == "-R" ]; then
-        crab -resubmit $JOBLIST -c $JOB_FOLDER
-    else
-        echo "sub"
-        crab -submit $JOBLIST -c $JOB_FOLDER
-    fi
-    # echo $JOBLIST
-fi
+  if $VERBOSE
+  then
+    echo "crab -submit $job_lower-$job_upper -c $JOB_FOLDER"
+  fi
+    crab -submit $job_lower-$job_upper -c $JOB_FOLDER
+    job_lower=$((job_upper+1))
+done 
+
