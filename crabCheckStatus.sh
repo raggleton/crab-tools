@@ -1,6 +1,12 @@
-#! /bin/bash
+#!/bin/bash
 
-getResub(){
+# Robin Aggleton 2013
+# Does:
+#  - crab -status
+#  - crab -resubmit on any failed, aborted jobs
+#  - produces script (FOLDER_success.sh) if all DONE to allow user to do crab -get
+
+function getResub {
 	echo "crab -get $1 -c $2"
 	OUTPUT_GET=$(crab -get $1 -c $2 | tee /dev/stderr)
 	echo "crab -resubmit $1 -c $2"
@@ -22,14 +28,87 @@ getResub(){
 	fi
 }
 
-# STATUS=`crab -status -c $1`
+
+function show_help {
+    echo ""
+    echo "This script will do crab -status, resubmit any failed jobs ."
+    echo ""
+    echo "Usage: crabCheckStatus.sh -f <dataset folder>"
+    echo ""
+    echo "Options:"
+    echo "  -f <folder> Specify dataset folder"
+    echo "  -h Show this help message"
+    echo "  -v Display verbose messages, for debugging only"
+    echo ""
+    exit 
+}
+
+########################
+# Start of main script
+########################
+
+JOB_FOLDER=""
+VERBOSE=false
+
+# Check to see if the user has passed an argument or not
+if [ $# -eq 0 ]
+then
+  echo "Error: Program requires argument"
+  show_help >&2
+  exit 1
+fi
+
+# Interpret and command line arguments
+# OPTIND=1 # Reset is necessary if getopts was used previously in the script.  It is a good idea to make this local in a function.
+while getopts "hvf:" opt; do
+  case "$opt" in
+    h)
+      show_help
+      exit 0
+      ;;
+    v)  
+      VERBOSE=true
+      ;;
+    f)
+      JOB_FOLDER=$OPTARG
+      ;;
+    '?')
+      show_help >&2
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND-1)) # Shift off the options and optional --.
+
+if $VERBOSE
+then
+  echo "verbose=$VERBOSE, job_folder='$JOB_FOLDER', Leftovers: $@"
+fi
+
+# Check what other stuff the user has passed
+if [ "$@" ]
+then
+  echo ""
+  echo "I don't know what to do with this: $@"
+  show_help >&2
+  exit
+fi
+
+# Check if user specified a valid folder
+if [ ! -d "$JOB_FOLDER" ]
+then
+  echo "Specified folder $JOB_FOLDER does not exist, please check again!" >&2
+  exit 2
+fi
+
+# STATUS=`crab -status -c $JOB_FOLDER`
 # echo "$STATUS" #Need "" to make it multi-line, otherwise WILL FAIL
 
 # Outputs all failed job numbers into array
 # -v ind=1 is external variable that tracks the index of jobs array (internal awk array)
 # The tee bit outputs to both stderr AND pipes it through to awk!!!
-crab -status -c $1 # Have to run command normally first, then run again piping throgh tee. I don't know why - flush issue?
-STATUS=$(crab -status -c $1 | tee /dev/stderr)
+crab -status -c $JOB_FOLDER # Have to run command normally first, then run again piping throgh tee. I don't know why - flush issue?
+STATUS=$(crab -status -c $JOB_FOLDER | tee /dev/stderr)
 myarr=($( echo "$STATUS" | awk -v ind=1 -F: '/Jobs with Wrapper Exit Code : / && $0 != "" {
 	
 	split($1,z," ")
@@ -71,7 +150,7 @@ echo " LETS ANALYSE"
 N_JOBS=${#myarr[@]}
 echo $N_JOBS
 echo "***********************************************************"
-echo $1
+echo $JOB_FOLDER
 
 # First of all, deal with fail & resubmits,
 # then check to see if any still Submitted/running
@@ -89,14 +168,14 @@ if [[ "$N_JOBS" -gt 0 ]]; then
 		let "test=$((x+1)) % 500"
 		if [ "$test" -eq 0 ]; then
 			LIST=${LIST#,}
-			getResub $LIST $1
+			getResub $LIST $JOB_FOLDER
 			LIST=""
 		fi
 		x=$((x+1))
 	done
 	# Left over job numbers
 	LIST=${LIST#,}
-	getResub $LIST $1
+	getResub $LIST $JOB_FOLDER
 
 else
 	if echo "$STATUS" | grep --quiet "Jobs Submitted\|Running\|Created"; then
@@ -104,22 +183,22 @@ else
 	else
 		# Need to add in a check that number of Total Jobs = number of Jobs Done
 		TOTAL=$(echo "$STATUS" | awk '/Total Jobs/ { print $2}')
-		DONE=$(echo "$STATUS" | awk -F: '/Jobs with Wrapper Exit Code : 0/ && $0 != "" { split($1,d," "); print d[2] }')
+		DONE=$(echo "$STATUS" | awk -F: '/Jobs with Wrapper Exit Code : 0/ && $0 != "" { split($JOB_FOLDER,d," "); print d[2] }')
 		if [ $TOTAL -eq $DONE ]; then
 			# Need to add in a check that number of Total Jobs = number of Jobs Done
 			echo " ++ CONGRATS, ALL DONE"
 			echo "Outputting bash script to get jobs for this dataset"
 			# Do some get all
 			# Put in safety check here before getting all!
-			if [ -f $1_success.sh ]; then
-				echo "Deleting old $1_success.sh"
-				rm $1_success.sh
+			if [ -f $JOB_FOLDER_success.sh ]; then
+				echo "Deleting old $JOB_FOLDER_success.sh"
+				rm $JOB_FOLDER_success.sh
 			fi
-			echo "Do ./$1_success.sh"
-			echo '#!/bin/bash' > $1_success.sh
-			echo "crab -get all -c" $1 >> $1_success.sh
-			chmod u+x $1_success.sh
-			# crab -get all -c $1 
+			echo "Do ./$JOB_FOLDER_success.sh"
+			echo '#!/bin/bash' > $JOB_FOLDER_success.sh
+			echo "crab -get all -c" $JOB_FOLDER >> $JOB_FOLDER_success.sh
+			chmod u+x $JOB_FOLDER_success.sh
+			# crab -get all -c $JOB_FOLDER 
 		fi
 	fi
 fi

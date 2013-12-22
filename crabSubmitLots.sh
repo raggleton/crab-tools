@@ -10,6 +10,7 @@
 function show_help {
     echo ""
     echo "This script will submit all CRAB jobs for a specified dataset, even if > 500 jobs."
+    echo ""
     echo "Usage: crabSubmitLots.sh -f <dataset folder>"
     echo ""
     echo "Options:"
@@ -20,6 +21,9 @@ function show_help {
     exit 
 }
 
+########################
+# Start of main script
+########################
 
 JOB_FOLDER=""
 VERBOSE=false
