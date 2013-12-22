@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 
 # Robin Aggleton 2013
 # Allows CRAB to submit more than 500 jobs for a given dataset folder
