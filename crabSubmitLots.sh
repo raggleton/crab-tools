@@ -91,10 +91,7 @@ do
     job_upper=$((job_lower+499))
   fi
 
-  if $VERBOSE
-  then
     echo "crab -submit $job_lower-$job_upper -c $JOB_FOLDER"
-  fi
     crab -submit $job_lower-$job_upper -c $JOB_FOLDER
     job_lower=$((job_upper+1))
 done 
