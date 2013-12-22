@@ -13,9 +13,9 @@ function show_help {
     echo "Usage: crabSubmitLots.sh -f <dataset folder>"
     echo ""
     echo "Options:"
+    echo "  -f <folder> Specify dataset folder"
     echo "  -h Show this help message"
     echo "  -v Display verbose messages, for debugging only"
-    echo "  -f <folder> Specify dataset folder"
     echo ""
     exit 
 }
@@ -56,10 +56,10 @@ shift $((OPTIND-1)) # Shift off the options and optional --.
 
 if $VERBOSE
 then
-  echo "verbose=$VERBOSE, output_file='$JOB_FOLDER', Leftovers: $@"
+  echo "verbose=$VERBOSE, job_folder='$JOB_FOLDER', Leftovers: $@"
 fi
 
-# Check what other stuff the user has passed as args
+# Check what other stuff the user has passed
 if [ "$@" ]
 then
   echo ""
@@ -68,7 +68,7 @@ then
   exit
 fi
 
-# Check if user specified a correct folder
+# Check if user specified a valid folder
 if [ ! -d "$JOB_FOLDER" ]
 then
   echo "Specified folder $JOB_FOLDER does not exist, please check again!" >&2
@@ -82,6 +82,8 @@ echo "Total number of jobs to submit: " $NJOBS
 job_lower=1
 job_upper=1
 
+# Loop over range of jobs in groups of 500
+# and do crab -submit on them
 while [ "$job_lower" -le "$NJOBS" ]
 do
   if [ "$NJOBS" -lt $((job_lower+499)) ]
@@ -91,8 +93,8 @@ do
     job_upper=$((job_lower+499))
   fi
 
-    echo "crab -submit $job_lower-$job_upper -c $JOB_FOLDER"
-    crab -submit $job_lower-$job_upper -c $JOB_FOLDER
-    job_lower=$((job_upper+1))
+  echo "crab -submit $job_lower-$job_upper -c $JOB_FOLDER"
+  crab -submit $job_lower-$job_upper -c $JOB_FOLDER
+  job_lower=$((job_upper+1))
 done 
 
