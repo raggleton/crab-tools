@@ -29,7 +29,7 @@ Now you can call any of my tools from any folder! Just type in the script name a
 
 This submits a set of jobs for a dataset. Use this to submit datasets which have >500 jobs, as Remote GlideIn doesn't let you submit more than 500 at a time. 
 
-Usage: `crabSubmitLots.sh -f <FOLDER NAME>`
+**_Usage:_** `crabSubmitLots.sh -f <FOLDER NAME>`
 
 ###crabCheckStatus.sh
 
@@ -43,7 +43,7 @@ This saves you having to do `crab -status`, sift through the output and then do 
 
 If all jobs are DONE it will output a script file, `DATASETNAME_success.sh`, which you can run to do `crab -get all` on the dataset. This program purposely *doesn't* run this, in case all jobs are not done for some reason.
 
-Usage: `crabCheckStatus.sh -f <FOLDER NAME>`
+**_Usage:_** `crabCheckStatus.sh -f <FOLDER NAME>`
 
 **Please note:** this is for those generic 60307/8,8020/1 errors that are solved by just resubmitting. Before running this blindly, have a look at the Task Monitor webpage or doing a `crab -status` manually to see if it something more serious that requires more attention - it's not a magic tool!
 
@@ -51,7 +51,7 @@ Usage: `crabCheckStatus.sh -f <FOLDER NAME>`
 
 This is crabCheckStatus.sh, but for lots of datasets (i.e. when using multicrab). This goes through each folder, does `crabCheckStatus.sh` on each, then at the end reports back to you which datasets are done or still running in a neat summary.
 
-Usage: `multicrabMonitor.sh`
+**_Usage:_** `multicrabMonitor.sh`
 Run in the multicrab folder that has all the dataset folders inside.
 
 TODO:
