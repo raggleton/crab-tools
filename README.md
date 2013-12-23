@@ -43,6 +43,8 @@ This saves you having to do `crab -status`, sift through the output and then do 
 
 If all jobs are DONE it will output a script file, `DATASETNAME_success.sh`, which you can run to do `crab -get all` on the dataset. This program purposely *doesn't* run this, in case all jobs are not done for some reason.
 
+Usage: `crabCheckStatus.sh -f <FOLDER NAME>`
+
 **Please note:** this is for those generic 60307/8,8020/1 errors that are solved by just resubmitting. Before running this blindly, have a look at the Task Monitor webpage or doing a `crab -status` manually to see if it something more serious that requires more attention - it's not a magic tool!
 
 ###multicrabMonitor.sh
