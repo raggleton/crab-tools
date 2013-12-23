@@ -7,6 +7,8 @@
 #  - produces script (FOLDER_success.sh) if all DONE to allow user to do crab -get
 
 function getResub {
+	# Does crab -get and resubmit
+	# args: $1 = dataset name, $2 = list of job numbers
 	echo "crab -get $1 -c $2"
 	OUTPUT_GET=$(crab -get $1 -c $2 | tee /dev/stderr)
 	echo "crab -resubmit $1 -c $2"
@@ -31,7 +33,9 @@ function getResub {
 
 function show_help {
     echo ""
-    echo "This script will do crab -status, resubmit any failed jobs ."
+    echo "This script will do crab -status, resubmit any failed/aborted jobs."
+    echo "If all jobs are done, it will produce a script, DATASET_success.sh,"
+    echo "which the user can run to do crab -get all on the dataset."
     echo ""
     echo "Usage: crabCheckStatus.sh -f <dataset folder>"
     echo ""
