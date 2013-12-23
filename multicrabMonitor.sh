@@ -13,6 +13,7 @@ function show_help {
     echo "It will output a summary at the end of what has completed and what is left to finish"
     echo ""
     echo "Usage: multicrabMonitor.sh"
+    echo "Run in the multicrab folder that has the dataset folders inside"
     echo ""
     echo "Options:"
     echo "  -h Show this help message"

@@ -51,9 +51,10 @@ Usage: `crabCheckStatus.sh -f <FOLDER NAME>`
 
 This is crabCheckStatus.sh, but for lots of datasets (i.e. when using multicrab). This goes through each folder, does `crabCheckStatus.sh` on each, then at the end reports back to you which datasets are done or still running in a neat summary.
 
+Usage: `multicrabMonitor.sh`
+Run in the multicrab folder that has all the dataset folders inside.
 
 TODO:
-- [ ] make more user friendly with "Usage:..." output
 - [ ] run `multicrabMonitor.sh` with cron, so you can submit, and leave it for a day or so.
 - [ ] tidy up scripts
 - [ ] maybe consolodate scripts?
