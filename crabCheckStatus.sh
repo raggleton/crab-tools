@@ -74,7 +74,7 @@ while getopts "hvf:" opt; do
       VERBOSE=true
       ;;
     f)
-      JOB_FOLDER=$OPTARG
+      JOB_FOLDER=${OPTARG%/} #removes trailing / for later on
       ;;
     '?')
       show_help >&2
@@ -195,13 +195,13 @@ else
 			# Do some get all
 			# Put in safety check here before getting all!
 			if [ -f $JOB_FOLDER_success.sh ]; then
-				echo "Deleting old $JOB_FOLDER_success.sh"
-				rm $JOB_FOLDER_success.sh
+				echo "Deleting old "$JOB_FOLDER"_success.sh"
+				rm "$JOB_FOLDER"_success.sh
 			fi
-			echo "Do ./$JOB_FOLDER_success.sh"
-			echo '#!/bin/bash' > $JOB_FOLDER_success.sh
-			echo "crab -get all -c" $JOB_FOLDER >> $JOB_FOLDER_success.sh
-			chmod u+x $JOB_FOLDER_success.sh
+			echo "Do ./"$JOB_FOLDER"_success.sh"
+			echo '#!/bin/bash' > "$JOB_FOLDER"_success.sh
+			echo "crab -get all -c" $JOB_FOLDER >> "$JOB_FOLDER"_success.sh
+			chmod u+x "$JOB_FOLDER"_success.sh
 			# crab -get all -c $JOB_FOLDER 
 		fi
 	fi
