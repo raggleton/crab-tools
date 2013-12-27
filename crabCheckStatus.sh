@@ -44,7 +44,7 @@ function show_help {
     echo "  -h Show this help message"
     echo "  -v Display verbose messages, for debugging only"
     echo ""
-    exit 
+    exit 1
 }
 
 ########################
@@ -63,12 +63,12 @@ then
 fi
 
 # Interpret and command line arguments
-# OPTIND=1 # Reset is necessary if getopts was used previously in the script.  It is a good idea to make this local in a function.
+# OPTIND=1 # Reset is necessary if getopts was used previously in the script.  
+# It is a good idea to make this local in a function.
 while getopts "hvf:" opt; do
   case "$opt" in
     h)
-      show_help
-      exit 0
+      show_help >&2
       ;;
     v)  
       VERBOSE=true
@@ -78,7 +78,6 @@ while getopts "hvf:" opt; do
       ;;
     '?')
       show_help >&2
-      exit 1
       ;;
   esac
 done
@@ -95,14 +94,13 @@ then
   echo ""
   echo "I don't know what to do with this: $@"
   show_help >&2
-  exit
 fi
 
 # Check if user specified a valid folder
 if [ ! -d "$JOB_FOLDER" ]
 then
   echo "Specified folder $JOB_FOLDER does not exist, please check again!" >&2
-  exit 2
+  exit 1
 fi
 
 # STATUS=`crab -status -c $JOB_FOLDER`

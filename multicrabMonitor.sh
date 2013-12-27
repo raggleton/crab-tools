@@ -18,7 +18,7 @@ function show_help {
     echo "Options:"
     echo "  -h Show this help message"
     echo ""
-    exit 
+    exit 1
 }
 
 ########################
@@ -28,12 +28,10 @@ function show_help {
 while getopts "hvf:" opt; do
   case "$opt" in
     h)
-      show_help
-      exit 0
+      show_help >&2
       ;;
     '?')
       show_help >&2
-      exit 1
       ;;
   esac
 done
@@ -43,6 +41,11 @@ shift $((OPTIND-1)) # Shift off the options and optional --.
 for f in $(ls -l | egrep '^d' | awk '{print $NF}')
 do 
 	crabCheckStatus.sh -f $f
+  if [ $? -gt 0 ]
+  then
+    echo "Failure to execute crabCheckStatus -f $f correctly, exiting." >&2
+    exit 1  
+  fi
 done
 
 # This produces a lovely summary at the end so you can see at a glance what's worked
