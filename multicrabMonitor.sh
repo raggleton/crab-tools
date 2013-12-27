@@ -42,7 +42,7 @@ shift $((OPTIND-1)) # Shift off the options and optional --.
 
 for f in $(ls -l | egrep '^d' | awk '{print $NF}')
 do 
-	crabCheckStatus.sh $f
+	crabCheckStatus.sh -f $f
 done
 
 # This produces a lovely summary at the end so you can see at a glance what's worked
