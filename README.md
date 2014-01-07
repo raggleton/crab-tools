@@ -15,6 +15,7 @@ In a location of your choice do:
 git clone https://github.com/raggleton/crab-tools.git
 cd crab-tools
 echo "export PATH=\$PATH:$(pwd)" >> ~/.bash_profile # Adds crab-tools folder to PATH variable
+. ~/.bash_profile # Re-run bash_profile so PATH is updated with crab-tools location
 ```
 
 Now you can call any of my tools from any folder! Just type in the script name and any args to execute it. For help, use the `-h` arg.
