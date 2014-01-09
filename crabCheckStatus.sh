@@ -111,14 +111,16 @@ fi
 # The tee bit outputs to both stderr AND pipes it through to awk!!!
 crab -status -c $JOB_FOLDER # Have to run command normally first, then run again piping throgh tee. I don't know why - flush issue?
 STATUS=$(crab -status -c $JOB_FOLDER | tee /dev/stderr)
-myarr=($( echo "$STATUS" | awk -v ind=1 -F: '/Jobs with Wrapper Exit Code : / && $0 != "" {
-	
-	split($1,z," ")
+myarr=($( echo "$STATUS" | awk -v ind=1 -F: '/Jobs with Wrapper Exit Code :|Jobs Cancelled|Jobs Aborted/ && $0 != "" {
+	split($1,z," ") # Get the exit code?
 	# print " Number of jobs for exit code " $2 " = " z[2];
 	
-	if ($2 != 0){ #Do one exit code at a time
+	if ($2 != 0){ # Do one exit code at a time
 		getline;
-
+		# Since the output for aborted jobs has an extra line, we need to skip it.
+		if (match($0,"You can resubmit")){
+			getline;
+		}
 		n=split($2,a,","); # Num of elements in job number list - NOT the same as the number of jobs
 		
 		ind2=ind; # For job array index, starting at the end of the last set of job numbers
