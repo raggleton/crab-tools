@@ -38,22 +38,51 @@ done
 shift $((OPTIND-1)) # Shift off the options and optional --.
 
 
-for f in $(ls -l | egrep '^d' | awk '{print $NF}')
-do 
-	crabCheckStatus.sh -f $f
-  if [ $? -gt 0 ]
-  then
-    echo "Failure to execute crabCheckStatus -f $f correctly, exiting." >&2
-    exit 1  
-  fi
-done
+# for f in $(ls -l | egrep '^d' | awk '{print $NF}')
+# for f in $(ls -d */)
+# do 
+#   crabCheckStatus.sh -f $f
+#   if [ $? -gt 0 ]
+#   then
+#     echo "Failure to execute crabCheckStatus -f $f correctly, exiting." >&2
+#     exit 1  
+#   fi
+# done
 
 # This produces a lovely summary at the end so you can see at a glance what's worked
-for f in $(ls -l | egrep '^d' | awk '{print $NF}')
+ALL_DONE=1
+# for f in $(ls -l | egrep '^d' | awk '{print $NF}')
+for f in $(ls -d */)
 do
-	if [[ -n $(find . -name $f"_success.sh") ]]; then
+	if [[ -n $(find . -name ${f%/}"_success.sh") ]]; then # Need to remove the trailing / on end of folders from ls -d
 		echo $f " +++ DONE :D"
 	else
 		echo $f " --- STILL RUNNING :("
+    ALL_DONE=$((ALL_DONE*0))
 	fi
 done
+
+# If all done, make some scripts that allows you to get all, and also allow you to copy all data
+if [ $ALL_DONE ]
+then
+  # If "do all" scripts exists already, delete them
+  if [ -f getAll.sh ]
+    then
+    rm getAll.sh
+  fi
+  if [ -f copyAll.sh ]
+    then
+    rm getAll.sh
+  fi
+
+  echo "All done"
+  echo "Making scripts to get and copy all data"
+  for f in $(ls -d */)
+  do
+    echo "nohup crab -get all -c $f > ${f%/}_get.out&" >> getAll.sh
+    echo "nohup crab -copyData -c $f > ${f%/}_copy.out&" >> copyAll.sh
+  done
+  chmod u+x getAll.sh
+  chmod u+x copyAll.sh
+  echo "Please run ./getAll.sh then ./copyAll.sh to get and copy all output"
+fi
