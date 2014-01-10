@@ -50,7 +50,7 @@ If all jobs are DONE it will output a script file, `DATASETNAME_success.sh`, whi
 
 ###multicrabMonitor.sh
 
-This is crabCheckStatus.sh, but for lots of datasets (i.e. when using multicrab). This goes through each folder, does `crabCheckStatus.sh` on each, then at the end reports back to you which datasets are done or still running in a neat summary.
+This is crabCheckStatus.sh, but for lots of datasets (i.e. when using multicrab). This goes through each folder, does `crabCheckStatus.sh` on each, then at the end reports back to you which datasets are done or still running in a neat summary. It then produces `<dataset>_success.sh` scripts for each completed dataset to allow you to do `crab -get` on the dataset. If all datasets are done, it produces `getAll.sh` and `copyAll.sh` scripts to get and copy all files.
 
 **_Usage:_** `multicrabMonitor.sh`
 Run in the multicrab folder that has all the dataset folders inside.
