@@ -39,15 +39,15 @@ shift $((OPTIND-1)) # Shift off the options and optional --.
 
 
 # for f in $(ls -l | egrep '^d' | awk '{print $NF}')
-# for f in $(ls -d */)
-# do 
-#   crabCheckStatus.sh -f $f
-#   if [ $? -gt 0 ]
-#   then
-#     echo "Failure to execute crabCheckStatus -f $f correctly, exiting." >&2
-#     exit 1  
-#   fi
-# done
+for f in $(ls -d */)
+do 
+  crabCheckStatus.sh -f $f
+  if [ $? -gt 0 ]
+  then
+    echo "Failure to execute crabCheckStatus -f $f correctly, exiting." >&2
+    exit 1  
+  fi
+done
 
 # This produces a lovely summary at the end so you can see at a glance what's worked
 ALL_DONE=1
